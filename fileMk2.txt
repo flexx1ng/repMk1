@@ -1,0 +1,125 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+string translator(int x) { //дни недели в программе цифрами от 0 до 6; функция переводит цифру в день недели
+	string day;
+	switch (x) {
+	case 0:
+		day = "monday";
+		break;
+	case 1:
+		day = "tuesday";
+		break;
+	case 2:
+		day = "wendsday";
+		break;
+	case 3:
+		day = "thursday";
+		break;
+	case 4:
+		day = "friday";
+		break;
+	case 5:
+		day = "satarday";
+		break;
+	case 6:
+		day = "sunday";
+		break;
+	}
+	return day;
+}
+
+string create_table(string schedule) { //создает строку, хранящую расписание; заполняет строку вводом из консоли
+	for (int i = 0; i < 5; i++) { //записвает один день в строку, начало дня в строке обозначается решеткой
+		int number_of_lessons;
+		char num;
+		cout << "enter number of lessons on " << translator(i) << "\n";
+		while (1) { 
+			cin >> num;
+			if (num == '0' || num == '1' || num == '2' || num == '3' || num == '4' || num == '5') { //unicode для символьных цифр отличается от математических цифр отличается на 48 
+				number_of_lessons = num - 48;
+				break;
+			}
+			else
+				cout << "YOU ARE NOT A PROFFICIENT USER\n"; //сообщение об ошибке
+		}
+		schedule += "#"; //начало дня
+		for (int j = 0; j < number_of_lessons; j++) { //записывает урок в строку, конец урока в строке обозначен восклицательным знаком
+			cout << "enter " << j + 1 << " lesson\n";
+			string lesson;
+			cin >> lesson;
+			schedule += "!" + lesson; //конец урока
+		}
+	}
+	return schedule;
+}
+
+void create_file(string schedule) { //создает тестовый файл и записвает туда расписание из строки
+	ofstream off("table.txt", ios::out);
+	if (!off) {
+		cout << "@output";
+		exit(1);
+	}
+	off << schedule << "##WEEKEND"; 
+	off.close();
+}
+
+void read_file() { //выводит расписание из файла в консоль 
+	char symbol; 
+	ifstream inn("table.txt", ios::in);
+	if (!inn) {
+		cout << "YOU ARE NOT A PROFFICIENT USER\n";
+		exit(1);
+	}
+	int day = 0;
+	int lesson = 1;
+	while (inn.peek() != EOF) { //форматирует расписание из строки в интерфейс
+		inn.get(symbol);
+		if (symbol == '#' && inn.peek() == '#') { // две решетки подряд значат день без уроков
+			cout << "\n\n\nSchedule for " << translator(day) << ":\nWEEKEND\n";
+			day++;
+		}
+		else
+		if (symbol == '#') {
+			cout << "\n\n\nSchedule for " << translator(day) << ":\n";
+			day++;
+		}
+		else
+			if (symbol == '!') {
+				cout << "Lesson " << lesson << ": ";
+				lesson++;
+			}
+			else
+				if (inn.peek() == '#') {
+					cout << symbol << "\n";
+					lesson = 1;
+				}
+				else
+					if (inn.peek() == '!')
+						cout << symbol << "\n";
+					else
+						cout << symbol;
+	}
+	inn.close();
+}
+
+
+int main()
+{
+	string schedule; //строка, хранящая расписание
+	while (1) {
+		cout << "\n\nEnter EDIT to edit timetable\nEnter PRINT to sea timetable\n\n\n";
+		string action; //строка ввода выюора действия в консоли
+		cin >> action;
+		if (action == "EDIT") {
+			schedule = create_table(schedule);
+			create_file(schedule);
+		}
+		else
+			if (action == "PRINT")
+				read_file();
+			else
+				cout << "YOU ARE NOT A PROFFICIENT USER\n";
+	}
+}
