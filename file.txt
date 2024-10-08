@@ -1,0 +1,164 @@
+#include <iostream>
+#include <fstream>
+#include <windows.h>
+
+using namespace std;
+
+#if 0
+struct students {
+	char surname[20];
+	int year;
+	float gpa;
+};
+
+int main() {
+	float gpa;
+	ofstream out("students.bin", ios::out | ios::binary);
+	if (!out) {
+		cout << "!!!out";
+		exit(1);
+	}
+	ifstream inn("students.bin", ios::in | ios::binary);
+	if (!inn) {
+		cout << "!!!inn";
+		exit(1);
+	}
+
+	int n;
+	cout << "enter number of students\n";
+	cin >> n;
+	students* S = new students[n];
+	for (int i = 0; i < n; i++) {
+		cout << "enter surname, year of birth and gpa\n";
+		cin >> S[i].surname >> S[i].year >> S[i].gpa;
+		out.write((char*)&S[i], sizeof(students));
+	}
+	out.close();
+
+	float gpa_req;
+	char letter_req;
+	cout << "enter required gpa and first leter of surname\n";
+	cin >> gpa_req >> letter_req;
+	for (int i = 0; i < n; i++) {
+		inn.read((char*)&S[i], sizeof(students));
+		string surname_holder = S[i].surname;
+		if (S[i].gpa >= gpa_req && letter_req == surname_holder.at(0))
+			cout << S[i].surname << " " << S[i].year << " " << S[i].gpa << "\n";
+	}
+	
+}
+
+#endif
+#if 1
+class Cpoint {
+public:
+	double x, y;
+	Cpoint() {
+		cout << "enter coordinates\n";
+		cin >> x >> y;
+	}
+	void show() {
+		cout << "x = " << x << " y = " << y << "\n";
+	}
+};
+
+class Cvector {
+public:
+	double x, y, xe, ye;
+	Cvector() {
+		cout << "enter coordinates of the begining\n";
+		cin >> x >> y;
+		cout << "enter coordinates of the end\n";
+		cin >> xe >> ye;
+	}
+	void show() {
+			cout << "Coordinates of the begining: x = " << x << " y = " << y << "\n";
+			cout << "Coordinates of the end: x = " << xe << " y = " << ye << "\n";
+	}
+};
+
+class Cmatrix {
+public:
+	double** A;
+	int n, k;
+	Cmatrix() {
+		srand(time(0));
+		Sleep(1000);
+		cout << "enter array size\n";
+		cin >> n >> k;
+		A = new double* [n];
+		for (int i = 0; i < n; i++)
+			A[i] = new double[k];
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < k; j++)
+				A[i][j] = rand() % 9 + 1;
+	}
+	void show() {
+		for (int i = 0; i < n; i++) {
+			cout << "\n";
+			for (int j = 0; j < k; j++)
+				cout << A[i][j] << " ";
+		}
+		cout << "\n\n";
+	}
+
+};
+
+
+class inn : public ifstream
+{
+public:
+	inn(const char* file_name) :ifstream(file_name, ios::in | ios::binary) { }
+	inn& operator >> (Cpoint obj) {
+		read((char*)&obj.x, sizeof(obj.x));
+		read((char*)&obj.y, sizeof(obj.y));
+		return *this;
+	}
+	inn& operator >> (Cvector obj) {
+		read((char*)&obj.x, sizeof(obj.x));
+		read((char*)&obj.y, sizeof(obj.y));
+		read((char*)&obj.xe, sizeof(obj.xe));
+		read((char*)&obj.ye, sizeof(obj.ye));
+		return *this;
+
+	}
+	inn& operator >> (Cmatrix obj) {
+		read((char*)&obj, sizeof(obj));
+		return *this;
+	}
+};
+
+class out : public ofstream
+{
+public:
+	out(const char* file_name) :ofstream(file_name, ios::out | ios::binary) { }
+	out& operator << (Cpoint obj) {
+		write((char*)&obj, sizeof(obj));
+		return *this;
+	}
+	out& operator << (Cvector obj) {
+		write((char*)&obj, sizeof(obj));
+		return *this;
+	}
+	out& operator << (Cmatrix obj) {
+		write((char*)&obj, sizeof(obj));
+		return *this;
+	}
+};
+
+int main() {
+	Cpoint Mk1;
+	Cvector Mk2;
+	Cmatrix Mk3;
+	out ot("overload.bin");
+	ot << Mk1;
+	ot << Mk2;
+	ot << Mk3;
+	inn in("overload.bin");
+	in >> Mk1;
+	Mk1.show();
+	Mk2.show();
+	Mk3.show();
+}
+
+#endif
