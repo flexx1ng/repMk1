@@ -1,0 +1,143 @@
+#include <iostream>
+
+#include <string>
+
+#include <map>
+
+#include <vector>
+
+
+using namespace std;
+
+
+// Структура для хранения информации о занятии
+
+struct Lesson {
+
+string subject;
+
+string teacher;
+
+string time;
+
+};
+
+
+// Функция для вывода расписания на экран
+
+void printSchedule(const map < string, vector<Lesson >> &schedule, const string& day) {
+
+cout << "Расписание на " << day << ":" << endl;
+
+if (schedule.count(day) == 0) {
+
+cout << "Занятий нет. Введите корректное число" << endl;
+
+return;
+
+}
+
+
+for (const Lesson& lesson : schedule.at(day)) {
+
+cout << lesson.time << " " << lesson.subject<<" "<< lesson.teacher << endl;
+
+}
+
+}
+
+
+int main()
+
+{
+
+setlocale(LC_ALL, "Rus");
+
+// Создаем карту для хранения расписания
+
+map<string, vector<Lesson>> schedule;
+
+
+// Заполняем расписание (пример)
+
+schedule["1"] = {
+
+{"Алгебра", "Иванов И.И.", "9:00-10:30"},
+
+{"Физика", "Петров П.П.", "10:45-12:15"}
+
+};
+
+schedule["2"] = {
+
+{"История", "Сидоров С.С.", "11:00-12:30"},
+
+{"Литература", "Козлова К.К.", "13:00-14:30"}
+
+};
+
+schedule["3"] = {
+
+{"Химия", "Михайлов М.М.", "10:00-11:30"},
+
+{"Биология", "Федорова Ф.Ф.", "11:45-13:15"}
+
+};
+
+schedule["4"] = {
+
+{"География", "Кузнецов К.К.", "9:00-10:30"},
+
+{"Информатика", "Соловьев С.С.", "10:45-12:15"}
+
+};
+
+schedule["5"] = {
+
+{"Русский язык", "Николаева Н.Н.", "11:00-12:30"},
+
+{"Иностранный язык", "Васильева В.В.", "13:00-14:30"}
+
+};
+
+schedule["6"] = {
+
+{ "Выходной день !" },
+
+};
+
+schedule["7"] = {
+
+{"Выходной день !"},
+
+};
+
+
+string day;
+
+
+cout << "Введите день недели (например - 1): " <<endl;
+
+cout << "1) Понедельник" << endl;
+
+cout << "2) Вторник" << endl;
+
+cout << "3) Среда" << endl;
+
+cout << "4) Четверг" << endl;
+
+cout << "5) Пятница" << endl;
+
+cout << "6) Суббота" << endl;
+
+cout << "7) Воскресенье" << endl;
+
+cin >> day;
+
+
+printSchedule(schedule, day);
+
+
+return 0;;
+
+}
