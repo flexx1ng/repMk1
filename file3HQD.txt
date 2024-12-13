@@ -13,7 +13,7 @@ int main() {
     // Создание текстовых файлов для каждого дня недели
     for (int i = 0; i < 7; ++i) {
         // Открываем файл с именем дня недели (например, "Monday.txt")
-        ofstream file(days[i] + ".txt");
+        fstream file(days[i] + ".txt");
         // Записываем названия предметов в файл
         for (const auto& subject : subjects) {
             file << subject << endl; // Записываем каждый предмет на новой строке
