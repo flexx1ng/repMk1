@@ -1,32 +1,25 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 
-using namespace std;
-
 int main() {
-    // Шаблоны дней недели
-    const string days[7] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-    // Шаблоны предметов
-    const string subjects[5] = { "Math", "Physics", "Chemistry", "Biology", "History" };
+    // Шаблоны дней недели и предметов
+    const std::string days[7] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+    const std::string subjects[5] = { "Math", "Physics", "Chemistry", "Biology", "History" };
 
-    // Создание текстовых файлов для каждого дня недели
-    for (int i = 0; i < 7; ++i) {
-        // Открываем файл с именем дня недели (например, "Monday.txt")
-        ofstream file(days[i] + ".txt");
-        // Записываем названия предметов в файл
+    // Создание и запись в текстовые файлы для каждого дня недели
+    for (const auto& day : days) {
+        std::ofstream file(day + ".txt");
         for (const auto& subject : subjects) {
-            file << subject << endl; // Записываем каждый предмет на новой строке
+            file << subject << std::endl; // Записываем каждый предмет на новой строке
         }
         file.close(); // Закрываем файл после записи
     }
 
     // Открываем созданные файлы в текстовом редакторе
     for (const auto& day : days) {
-        // Формируем команду для открытия файла с помощью
-        string command =  day + ".txt";
-        // Выполняем команду, открывая файл
-        system(command.c_str());
+        std::string command = "notepad " + day + ".txt"; // Формируем команду для открытия файла
+        system(command.c_str()); // Выполняем команду
     }
 
     return 0; // Завершаем программу
