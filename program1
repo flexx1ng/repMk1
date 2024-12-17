@@ -1,1 +1,35 @@
+//Прикольная программа 
 
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+int main() {
+    // Инициализация генератора случайных чисел
+    srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    int secretNumber = std::rand() % 100 + 1; // Загаданное число от 1 до 100
+    int playerGuess = 0;
+    int attempts = 0;
+
+    cout << "Добро пожаловать в игру 'Угадай число'!" << std::endl;
+    cout << "Я загадал число от 1 до 100. Попробуй его угадать!" << std::endl;
+
+    while (playerGuess != secretNumber) {
+        cout << "Введите ваше предположение: ";
+        scin >> playerGuess;
+        attempts++;
+
+        if (playerGuess < secretNumber) {
+            cout << "Слишком маленькое число. Попробуйте снова." << std::endl;
+        } else if (playerGuess > secretNumber) {
+            cout << "Слишком большое число. Попробуйте снова." << std::endl;
+        } else {
+            cout << "Поздравляю! Вы угадали число " << secretNumber << " за " << attempts << " попыток." << std::endl;
+        }
+    }
+
+    return 0;
+}
