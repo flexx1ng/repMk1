@@ -52,30 +52,3 @@ class ProdEmployeesRegistry(Base):
     vacations = relationship("ProdVacation", back_populates="employee", cascade="all, delete-orphan")
 
 
-class ProdVacation(Base):
-    __tablename__ = 'prod_vacation'
-
-    id: Mapped[intpk]
-    user_id: Mapped[int] = mapped_column(ForeignKey('prod_employees_registry.id'))
-    date_start: Mapped[datetime.date]
-    date_end: Mapped[datetime.date]
-    is_deleted: Mapped[bool | None] = mapped_column(default=False)
-
-    employee = relationship("ProdEmployeesRegistry", back_populates="vacations")
-
-
-class Departments(Base):
-    __tablename__ = 'departments'
-
-    id: Mapped[intpk]
-    department_name: Mapped[str_256]
-    department_key: Mapped[str_256]
-
-
-class ProdEmployeeDepartment(Base):
-    __tablename__ = 'prod_employee_department'
-
-    id: Mapped[intpk]
-    user_id: Mapped[int] = mapped_column(ForeignKey('prod_employees_registry.id'))
-    department_id: Mapped[int] = mapped_column(ForeignKey('departments.id'))
-    is_deleted: Mapped[bool | None] = mapped_column(default=False)
