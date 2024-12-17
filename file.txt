@@ -83,7 +83,7 @@ public:
 	int n, k;
 	Cmatrix() {
 		srand(time(0));
-		Sleep(1000);
+		Sleep(100);
 		cout << "enter array size\n";
 		cin >> n >> k;
 		A = new double* [n];
