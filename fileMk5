@@ -1,143 +1,112 @@
 #include <iostream>
-
 #include <string>
-
 #include <map>
-
 #include <vector>
-
+#include <limits> // For numeric_limits
+#include <iomanip> // For setw
 
 using namespace std;
 
+// Enum for days of the week
+enum class Day {
+    MONDAY = 1,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
+};
 
-// Структура для хранения информации о занятии
-
+// Structure to store information about a lesson
 struct Lesson {
-
-string subject;
-
-string teacher;
-
-string time;
-
+    string subject;
+    string teacher;
+    string time;
 };
 
-
-// Функция для вывода расписания на экран
-
-void printSchedule(const map < string, vector<Lesson >> &schedule, const string& day) {
-
-cout << "Расписание на " << day << ":" << endl;
-
-if (schedule.count(day) == 0) {
-
-cout << "Занятий нет. Введите корректное число" << endl;
-
-return;
-
+// Function to get the string representation of a day
+string dayToString(Day day) {
+    switch (day) {
+    case Day::MONDAY:    return "Monday";
+    case Day::TUESDAY:   return "Tuesday";
+    case Day::WEDNESDAY: return "Wednesday";
+    case Day::THURSDAY:  return "Thursday";
+    case Day::FRIDAY:    return "Friday";
+    case Day::SATURDAY:  return "Saturday";
+    case Day::SUNDAY:    return "Sunday";
+    default:            return "Unknown";
+    }
 }
 
+// Function to print the schedule
+void printSchedule(const map<Day, vector<Lesson>>& schedule, Day day) {
+    cout << "Schedule for " << dayToString(day) << ":" << endl;
 
-for (const Lesson& lesson : schedule.at(day)) {
-
-cout << lesson.time << " " << lesson.subject<<" "<< lesson.teacher << endl;
-
+    if (schedule.count(day) == 0) {
+        cout << "No classes scheduled for this day." << endl;
+        return;
+    }
+    
+    for (const Lesson& lesson : schedule.at(day)) {
+       cout << "  " << left << setw(10) << lesson.time << " " << left << setw(12) << lesson.subject << " " << lesson.teacher << endl;
+    }
+    cout << endl;
 }
 
-}
+int main() {
+    setlocale(LC_ALL, "Rus");
+
+    // Create a map to store the schedule using the Day enum
+    map<Day, vector<Lesson>> schedule;
+
+    // Populate the schedule (example)
+    schedule[Day::MONDAY] = {
+        {"Algebra",   "Ryan Gosling",    "9:00-10:30"},
+        {"Physics",   "Michael Jackson", "10:45-12:15"}
+    };
+    schedule[Day::TUESDAY] = {
+        {"History",  "Billy Herrington",  "11:00-12:30"},
+        {"Literature", "Maxim Marcinkevich", "13:00-14:30"}
+    };
+    schedule[Day::WEDNESDAY] = {
+        {"Chemistry", "Vladimir Putin",    "10:00-11:30"},
+        {"Biology",  "Gabe Newell",       "11:45-13:15"}
+    };
+    schedule[Day::THURSDAY] = {
+      {"Geography",    "Jackie Chan",    "9:00-10:30"},
+      {"Informatics", "Winston Churchill", "10:45-12:15"}
+    };
+    schedule[Day::FRIDAY] = {
+      {"Russian",      "Adolf Hitler",   "11:00-12:30"},
+      {"Foreign Lang", "Donald Trump",    "13:00-14:30"}
+    };
+    schedule[Day::SATURDAY] = {}; // No classes on Saturday
+    schedule[Day::SUNDAY] = {};  // No classes on Sunday
 
 
-int main()
+    int dayInput;
+    while (true) {
+        cout << "Enter the day of the week (1-7):" << endl;
+        cout << "1) Monday" << endl;
+        cout << "2) Tuesday" << endl;
+        cout << "3) Wednesday" << endl;
+        cout << "4) Thursday" << endl;
+        cout << "5) Friday" << endl;
+        cout << "6) Saturday" << endl;
+        cout << "7) Sunday" << endl;
+        
+        cin >> dayInput;
+          if (cin.fail() || dayInput < 1 || dayInput > 7) {
+            cout << "Invalid input. Please enter a number between 1 and 7." << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                continue;
+        }
+        break;
+    }
 
-{
+    printSchedule(schedule, static_cast<Day>(dayInput));
 
-setlocale(LC_ALL, "Rus");
-
-// Создаем карту для хранения расписания
-
-map<string, vector<Lesson>> schedule;
-
-
-// Заполняем расписание (пример)
-
-schedule["1"] = {
-
-{"Алгебра", "Райан Гослинг", "9:00-10:30"},
-
-{"Физика", "Майкл Джексон", "10:45-12:15"}
-
-};
-
-schedule["2"] = {
-
-{"История", "Билли Херрингтон", "11:00-12:30"},
-
-{"Литература", "Максим Марцинкевич", "13:00-14:30"}
-
-};
-
-schedule["3"] = {
-
-{"Химия", "Владимир Путин", "10:00-11:30"},
-
-{"Биология", "Гейб Ньюэлл", "11:45-13:15"}
-
-};
-
-schedule["4"] = {
-
-{"География", "Джеки Чан", "9:00-10:30"},
-
-{"Информатика", "Уинстон Черчилль", "10:45-12:15"}
-
-};
-
-schedule["5"] = {
-
-{"Русский язык", "Адольф Гитлер", "11:00-12:30"},
-
-{"Иностранный язык", "Дональд Трамп", "13:00-14:30"}
-
-};
-
-schedule["6"] = {
-
-{ "Выходной день !" },
-
-};
-
-schedule["7"] = {
-
-{"Выходной день !"},
-
-};
-
-
-string day;
-
-
-cout << "Введите день недели (например - 1): " <<endl;
-
-cout << "1) Понедельник" << endl;
-
-cout << "2) Вторник" << endl;
-
-cout << "3) Среда" << endl;
-
-cout << "4) Четверг" << endl;
-
-cout << "5) Пятница" << endl;
-
-cout << "6) Суббота" << endl;
-
-cout << "7) Воскресенье" << endl;
-
-cin >> day;
-
-
-printSchedule(schedule, day);
-
-
-return 0;;
-
+    return 0;
 }
