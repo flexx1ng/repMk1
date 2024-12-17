@@ -1,0 +1,44 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    // Массив дней недели
+    const string daysOfWeek[7] = {"Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"};
+
+    // Имя файла для записи заметок
+    string filename = "notes.txt";
+
+    // Открытие файла для записи
+    ofstream outFile(filename);
+
+    if (!outFile) {
+        cerr << "Ошибка открытия файла для записи." << endl;
+        return 1; // Завершение программы с ошибкой
+    }
+
+    // Запись заметок по предметам на каждый день
+    for (const string& day : daysOfWeek) {
+        string subject;
+        string notes;
+
+        cout << "Введите предмет для " << day << ": ";
+        getline(cin, subject);
+
+        cout << "Введите заметки по предмету " << subject << ": ";
+        getline(cin, notes);
+
+        // Запись в файл
+        outFile << day << ": " << subject << endl;
+        outFile << "Заметки: " << notes << endl;
+        outFile << "-----------------------------" << endl;
+    }
+
+    // Закрытие файла
+    outFile.close();
+    cout << "Заметки успешно записаны в " << filename << endl;
+
+    return 0;
+}
