@@ -1,0 +1,63 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+int main() {
+    srand(static_cast<unsigned int>(time(0))); // Инициализация генератора случайных чисел
+    int bitcoins = 1000; // Начальное количество биткоинов
+    setlocale(LC_ALL, "Rus");
+
+    cout << "Добро пожаловать в игру с кубиками!" << endl;
+    cout << "У вас есть " << bitcoins << " биткоинов." << endl;
+
+    while (bitcoins > 0) {
+        int bet;
+        cout << "Введите вашу ставку (доступно: " << bitcoins << " биткоинов): ";
+        cin >> bet;
+
+        // Проверка на корректность ставки
+        if (bet <= 0 || bet > bitcoins) {
+            cout << "Некорректная ставка. Попробуйте снова." << endl;
+            continue;
+        }
+
+        int target;
+        cout << "Введите число, на которое вы ставите (от 2 до 12): ";
+        cin >> target;
+
+        // Проверка на корректность введенного числа
+        if (target < 2 || target > 12) {
+            cout << "Некорректное число. Оно должно быть от 2 до 12." << endl;
+            continue;
+        }
+
+        // Бросок кубиков
+        int die1 = rand() % 6 + 1; // Кубик 1
+        int die2 = rand() % 6 + 1; // Кубик 2
+        int sum = die1 + die2; // Сумма значений кубиков
+
+        cout << "Вы бросили кубики: " << die1 << " и " << die2 << ". Сумма: " << sum << endl;
+
+        // Проверка условий выигрыша
+        if (sum >= target) {
+            bitcoins += bet; // Увеличение биткоинов вдвое
+            cout << "Вы выиграли! Теперь у вас " << bitcoins << " биткоинов." << endl;
+        }
+        else {
+            bitcoins -= bet; // Уменьшение биткоинов на ставку
+            cout << "Вы проиграли! Теперь у вас " << bitcoins << " биткоинов." << endl;
+        }
+
+        // Проверка на окончание игры
+        if (bitcoins <= 0) {
+            cout << "Вы проиграли все свои биткоины. Игра окончена!" << endl;
+        }
+        else {
+            cout << endl; // Пустая строка для удобства чтения
+        }
+    }
+
+    return 0;
+}
