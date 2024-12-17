@@ -109,13 +109,13 @@ public:
     }
 };
 
-void playBlackjack() {
+void  ИграВОчко() {
     Deck deck;
     Player player("Игрок");
     Player dealer("Дилер");
     int bitcoins = 1000; // Начальное количество биткоинов
 
-    cout << "Добро пожаловать в игру '21'!" << endl;
+    cout << "Добро пожаловать в игру 'Очко'!" << endl;
     cout << "У вас есть " << bitcoins << " биткоинов." << endl;
 
     while (bitcoins > 0) {
@@ -142,7 +142,7 @@ void playBlackjack() {
 
             int playerValue = player.calculateHandValue();
             if (playerValue > 21) {
-                cout << "Вы превысили 21! Вы проиграли." << endl;
+                cout << "Вы превысили 21! Вы проиграли, УВЫ." << endl;
                 bitcoins -= bet;
                 player.clearHand();
                 dealer.clearHand();
@@ -183,7 +183,7 @@ void playBlackjack() {
             bitcoins += bet;
         }
         else if (playerValue < dealerValue) {
-            cout << "Вы проиграли." << endl;
+            cout << "Вы проиграли. Бездарь." << endl;
             bitcoins -= bet;
         }
         else {
@@ -194,7 +194,7 @@ void playBlackjack() {
 
         // Проверка на окончание игры
         if (bitcoins <= 0) {
-            cout << "Вы проиграли все свои биткоины. Игра окончена!" << endl;
+            cout << "Е*ный рот вашего казино. Игра окончена. Ну поплачь!" << endl;
         }
 
         // Очищаем руки для следующего раунда
@@ -206,6 +206,6 @@ void playBlackjack() {
 
 int main() {
     setlocale(LC_ALL, "Rus");
-    playBlackjack();
+    ИграВОчко();
     return 0;
 }
