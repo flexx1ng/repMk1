@@ -1,24 +1,38 @@
 #include <iostream>
 #include <fstream>
+#include <codecvt>
+#include <locale>
 
 using namespace std;
 
 int main() {
-    const string days[] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
-    const string subjects[] = { "Math", "Physics", "Chemistry", "Biology", "History" };
+    setlocale(LC_ALL, "Russian");
+    const wstring days[] = { L"Понедельник", L"Вторник", L"Среда", L"Четверг", L"Пятница", L"Суббота", L"Воскресенье" };
+    const wstring subjects[] = { L"Математика", L"Физика", L"Химия", L"Биология", L"История" };
 
-    ofstream scheduleFile("schedule.json");
-    if (!scheduleFile) return cerr << "Error: Unable to open output file." << endl, 1;
+    wofstream scheduleFile("schedule.json");
+    scheduleFile.imbue(locale(locale(), new codecvt_utf8<wchar_t>)); 
 
-    scheduleFile << "{\n";
-    for (const auto& day : days) {
-        scheduleFile << " "" << day << "": [";
-        for (int j = 0; j < 5; ++j) {
-            scheduleFile << (j ? ", " : "") << """ << subjects[j] << """;
-        }
-        scheduleFile << "]\n";
+    if (!scheduleFile) {
+        wcerr << L"Ошибка: невозможно открыть файл для записи." << endl; 
+        return 1;
     }
-    scheduleFile << "}\n";
 
-    cout << "Schedule written to 'schedule.json'" << endl;
+    scheduleFile << L"{\n"; 
+    for (size_t i = 0; i < size(days); ++i) { 
+        scheduleFile << L"  \"" << days[i] << L"\": ["; 
+        for (size_t j = 0; j < size(subjects); ++j) { 
+            scheduleFile << L"\"" << subjects[j] << L"\""; 
+            if (j < size(subjects) - 1) scheduleFile << L", "; 
+        }
+        scheduleFile << L"]";
+        if (i < size(days) - 1) scheduleFile << L","; 
+        scheduleFile << L"\n";
+    }
+    scheduleFile << L"}\n"; 
+
+    scheduleFile.close(); 
+    wcout << L"Расписание записано в файл 'schedule.json'" << endl; 
+
+    return 0;
 }
