@@ -1,0 +1,211 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+const int MAX_CARDS = 10; // Максимальное количество карт для игрока и дилера
+
+enum Suit {
+    HEARTS,
+    DIAMONDS,
+    CLUBS,
+    SPADES
+};
+
+struct Card {
+    int value; // Значение карты (1-11 для туза, 2-10 для других)
+};
+
+class Deck {
+private:
+    Card cards[52];
+    int currentCard;
+
+public:
+    Deck() {
+        int index = 0;
+        for (int suit = HEARTS; suit <= SPADES; suit++) {
+            for (int value = 1; value <= 13; value++) {
+                cards[index].value = (value > 10) ? 10 : value; // Валет, Дама, Король = 10
+                index++;
+            }
+        }
+        shuffle();
+        currentCard = 0;
+    }
+
+    void shuffle() {
+        srand(static_cast<unsigned int>(time(0)));
+        for (int i = 0; i < 52; i++) {
+            int j = rand() % 52;
+            swap(cards[i], cards[j]);
+        }
+    }
+
+    Card draw() {
+        return cards[currentCard++];
+    }
+
+    bool isEmpty() {
+        return currentCard >= 52;
+    }
+};
+
+class Player {
+private:
+    Card hand[MAX_CARDS];
+    int cardCount;
+    string name;
+
+public:
+    Player(string playerName) : name(playerName), cardCount(0) {}
+
+    void addCard(Card card) {
+        if (cardCount < MAX_CARDS) {
+            hand[cardCount++] = card;
+        }
+    }
+
+    int calculateHandValue() {
+        int value = 0;
+        int aces = 0;
+
+        for (int i = 0; i < cardCount; i++) {
+            value += hand[i].value;
+            if (hand[i].value == 1) { // Если туз
+                aces++;
+            }
+        }
+
+        // Превращаем тузы в 11, если это возможно и не превышает 21
+        while (value + 10 <= 21 && aces > 0) {
+            value += 10;
+            aces--;
+        }
+
+        return value;
+    }
+
+    void displayHand(bool reveal = false) {
+        cout << name << "'s hand: ";
+        for (int i = 0; i < cardCount; i++) {
+            if (i == 0 && !reveal) {
+                cout << "[?] "; // Показываем скрытую карту
+            }
+            else {
+                cout << "[" << hand[i].value << "] ";
+            }
+        }
+        cout << endl;
+    }
+
+    bool isBusted() {
+        return calculateHandValue() > 21;
+    }
+
+    void clearHand() {
+        cardCount = 0; // Очищаем руку
+    }
+};
+
+void playBlackjack() {
+    Deck deck;
+    Player player("Игрок");
+    Player dealer("Дилер");
+    int bitcoins = 1000; // Начальное количество биткоинов
+
+    cout << "Добро пожаловать в игру '21'!" << endl;
+    cout << "У вас есть " << bitcoins << " биткоинов." << endl;
+
+    while (bitcoins > 0) {
+        int bet;
+        cout << "Введите вашу ставку (доступно: " << bitcoins << " биткоинов): ";
+        cin >> bet;
+
+        // Проверка на корректность ставки
+        if (bet <= 0 || bet > bitcoins) {
+            cout << "Некорректная ставка. Попробуйте снова." << endl;
+            continue;
+        }
+
+        // Начальные карты
+        player.addCard(deck.draw());
+        player.addCard(deck.draw());
+        dealer.addCard(deck.draw());
+        dealer.addCard(deck.draw());
+
+        // Ход игрока
+        while (true) {
+            player.displayHand();
+            dealer.displayHand(false); // Показываем только одну карту дилера
+
+            int playerValue = player.calculateHandValue();
+            if (playerValue > 21) {
+                cout << "Вы превысили 21! Вы проиграли." << endl;
+                bitcoins -= bet;
+                player.clearHand();
+                dealer.clearHand();
+                break;
+            }
+
+            char choice;
+            cout << "Хотите взять еще карту? (y/n): ";
+            cin >> choice;
+
+            if (choice == 'y') {
+                player.addCard(deck.draw());
+            }
+            else {
+                break;
+            }
+        }
+
+        // Ход дилера
+        if (!player.isBusted()) {
+            while (dealer.calculateHandValue() < 17) {
+                dealer.addCard(deck.draw());
+            }
+            dealer.displayHand(true); // Показываем все карты дилера
+        }
+
+        // Определение победителя
+        int playerValue = player.calculateHandValue();
+        int dealerValue = dealer.calculateHandValue();
+
+        cout << "Ваши очки: " << playerValue << ", Очки дилера: " << dealerValue << endl;
+
+        if (playerValue > 21) {
+            cout << "Вы проиграли." << endl;
+        }
+        else if (dealerValue > 21 || playerValue > dealerValue) {
+            cout << "Вы выиграли! Ставка удваивается." << endl;
+            bitcoins += bet;
+        }
+        else if (playerValue < dealerValue) {
+            cout << "Вы проиграли." << endl;
+            bitcoins -= bet;
+        }
+        else {
+            cout << "Ничья! Ставка возвращается." << endl;
+        }
+
+        cout << "У вас осталось " << bitcoins << " биткоинов." << endl;
+
+        // Проверка на окончание игры
+        if (bitcoins <= 0) {
+            cout << "Вы проиграли все свои биткоины. Игра окончена!" << endl;
+        }
+
+        // Очищаем руки для следующего раунда
+        player.clearHand();
+        dealer.clearHand();
+        cout << endl; // Пустая строка для удобства чтения
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "Rus");
+    playBlackjack();
+    return 0;
+}
